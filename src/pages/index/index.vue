@@ -9,19 +9,9 @@
       indicator-color="rgba(255, 255, 255, 0.6)"
       indicator-active-color="#fff"
     >
-      <swiper-item>
+      <swiper-item v-for="item in Slideshow" :key="item.goods_id">
         <a href>
-          <img src="/static/uploads/banner1.png" />
-        </a>
-      </swiper-item>
-      <swiper-item>
-        <a href>
-          <img src="/static/uploads/banner2.png" />
-        </a>
-      </swiper-item>
-      <swiper-item>
-        <a href>
-          <img src="/static/uploads/banner3.png" />
+          <img :src="item.image_src" />
         </a>
       </swiper-item>
     </swiper>
@@ -138,11 +128,12 @@
       // 轮播图接口
      async getSlideshow(){
        const {message} = await request({
-          url: 'https://www.zhengzhicheng.cn/api/public/v1/home/floordata'
+          url: 'api/public/v1/home/swiperdata'
         })
-        // console.log(message)
-        
+        this.Slideshow = message   
       } 
+
+
     },
   
     mounted() {
