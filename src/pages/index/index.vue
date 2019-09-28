@@ -17,129 +17,83 @@
     </swiper>
     <!-- 导航条 -->
     <div class="navs">
-      <a href>
-        <img src="/static/uploads/icon_index_nav_1@2x.png" />
-      </a>
-      <a href>
-        <img src="/static/uploads/icon_index_nav_2@2x.png" />
-      </a>
-      <a href>
-        <img src="/static/uploads/icon_index_nav_3@2x.png" />
-      </a>
-      <a href>
-        <img src="/static/uploads/icon_index_nav_4@2x.png" />
+      <a href v-for="(item,index) in pageSplit" :key="index">
+        <img :src="item.image_src" />
       </a>
     </div>
     <!-- 楼层 -->
     <div class="floors">
-      <div class="floor">
+      <div class="floor" v-for="(item,index) in floor" :key="index">
         <div class="title">
-          <img src="/static/uploads/pic_floor01_title.png" />
+          <img :src="item.floor_title.image_src"/>
         </div>
         <div class="items">
-          <a href>
-            <img src="/static/uploads/pic_floor01_1@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor01_2@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor01_3@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor01_4@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor01_5@2x.png" />
+          <a href v-for="(e,key) in item.product_list" :key="key"> 
+            <img :src="e.image_src" />
           </a>
         </div>
       </div>
-      <div class="floor">
-        <div class="title">
-          <img src="/static/uploads/pic_floor02_title.png" />
-        </div>
-        <div class="items">
-          <a href>
-            <img src="/static/uploads/pic_floor02_1@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor02_2@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor02_3@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor02_4@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor02_5@2x.png" />
-          </a>
-        </div>
-      </div>
-      <div class="floor">
-        <div class="title">
-          <img src="/static/uploads/pic_floor03_title.png" />
-        </div>
-        <div class="items">
-          <a href>
-            <img src="/static/uploads/pic_floor03_1@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor03_2@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor03_3@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor03_4@2x.png" />
-          </a>
-          <a href>
-            <img src="/static/uploads/pic_floor03_5@2x.png" />
-          </a>
-        </div>
-      </div>
+     
     </div>
   </div>
 </template>
 
 <script>
-
-  import search from '@/components/search'
+import search from "@/components/search";
 // 导入 mpvue.request 的 Promise 版本
-  import request from '@/utils/request';
-  export default {
+import request from "@/utils/request";
+export default {
+  data() {
+    return {
+      pageHeight: "auto",
+      // 轮播图
+      Slideshow: [],
+      // 首页分页
+      pageSplit: [],
+      // 楼层数据
+      floor:[],
+    };
+  },
 
-    data () {
-      return {
-        pageHeight: 'auto',
-        // 轮播图
-        Slideshow:''
-      }
+  components: {
+    search
+  },
+
+  methods: {
+    disableScroll(ev) {
+      this.pageHeight = ev.pageHeight + "px";
+    },
+    // 轮播图数据
+    async getSlideshow() {
+      const { message } = await request({
+        url: "api/public/v1/home/swiperdata"
+      });
+      this.Slideshow = message;
     },
 
-    components: {      
-      search
+    // 首页分类
+    async homepageSplit() {
+      const { message } = await request({
+        url: "api/public/v1/home/catitems"
+      });
+      this.pageSplit = message;
     },
-    
-    methods: {
-      disableScroll (ev) {
-        this.pageHeight = ev.pageHeight + 'px';
-      },
-      // 轮播图接口
-     async getSlideshow(){
-       const {message} = await request({
-          url: 'api/public/v1/home/swiperdata'
-        })
-        this.Slideshow = message   
-      } 
 
+    // 首页楼层数据
+    async getFloor() {
+      const { message } = await request({
+        url: "api/public/v1/home/floordata"
+      });
+      this.floor = message;
+    }
+  },
 
-    },
-  
-    mounted() {
-      this.getSlideshow()
-    },
+  mounted() {
+    this.getSlideshow();
+    this.homepageSplit();
+    this.getFloor();
   }
+};
 </script>
 
 <style scoped lang="less">
