@@ -9,7 +9,8 @@
     </div>
     <!-- 商品列表 -->
     <scroll-view class="goods" scroll-y @scrolltolower="getMoreGoods">
-      <div class="item" v-for="item in productlist.goods" :key="item.goods_id">
+      <div class="item" v-for="item in productlist" :key="item.goods_id"
+      @click="goDetail(item.goods_id)">
         <!-- 商品图片 -->
         <image class="pic" :src="item.goods_small_logo"></image>
         <!-- 商品信息 -->
@@ -107,12 +108,33 @@
         // 页数索引
         pagenum:1,
         // 每页长度
-        pageSize:5
+        pageSize:5,
+        // 列表长度
+        total: 1
       }
     },
     methods: {
+      // 跳转
+      goDetail(id){
+        mpvue.navigateTo({
+           url: '/pages/goods/main?id=' + id
+        })
+      },
+
+        // 下拉滚动
+      getMoreGoods(){
+
+        // 页数加1
+          this.pagenum ++
+
+        // 重新获取数据
+        this.getProductlist(this.query)
+      },
+
       // 商品列表数据
       async getProductlist(data){
+
+        if(this.total == this.productlist.length) return;
 
         // 分页参数
         data.pagenum = this.pagenum
@@ -122,19 +144,24 @@
             url:'api/public/v1/goods/search',
             data
         })
-       this.productlist = message
+        // 数组合并
+        this.productlist = this.productlist.concat(message.goods)
+
+        // 记录列表长度
+        this.total = message.total
+
       },
   
-      // 下拉滚动
-      getMoreGoods(){
 
-      }
+
 
     },
     onLoad( query){
-    
+      // 将获得到的地址参数记录下来
+      this.query = query
 
       this.getProductlist(query)
-    }
+    },
+
   }
 </script>
