@@ -43,10 +43,10 @@
 					"scene": null
 				},
 				{
-					"id": 1,
-					"name": "pages/list/main",
-					"pathName": "pages/list/main",
-					"query": "query=小米",
+					"id": -1,
+					"name": "pages/goods/main",
+					"pathName": "pages/goods/main",
+					"query": "id=701",
 					"scene": null
 				}
 			]
