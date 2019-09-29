@@ -63,7 +63,7 @@ export default {
   methods:{
 
   async getClassify(){
-    console.log('21')
+
     // 分类接口
     const {message} = await request({
       url:'api/public/v1/categories'

@@ -33,12 +33,20 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 1,
 			"list": [
 				{
 					"id": -1,
 					"name": "pages/category/main",
 					"pathName": "pages/category/main",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 1,
+					"name": "pages/list/main",
+					"pathName": "pages/list/main",
+					"query": "query=小米",
 					"scene": null
 				}
 			]
