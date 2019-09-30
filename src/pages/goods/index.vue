@@ -20,7 +20,7 @@
     </div>
     <!-- 操作 -->
     <div class="action">
-      <button>联系客服</button>
+      <button open-type="contact">联系客服</button>
       <span class="cart" @click="goCart">购物车</span>
       <span class="add" @click="addCart">加入购物车</span>
       <span class="buy">立即购买</span>
