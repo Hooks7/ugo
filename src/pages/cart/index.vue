@@ -24,9 +24,9 @@
             <p class="price"><span>￥</span>{{cart.goods_price}}<span>.00</span></p>
             <!-- 加减 -->
             <div class="amount">
-              <span class="reduce">-</span>
-              <input type="number" value="1" class="number">
-              <span class="plus">+</span>
+              <span class="reduce" @click="changeNumber(-1,index)">-</span>
+              <input type="number" :value="cart.goods_number" class="number">
+              <span class="plus" @click="changeNumber(1,index) ">+</span>
             </div>
           </div>
           <!-- 选框 -->
@@ -287,23 +287,38 @@
         })
 
       // 记录本地
-      mpvue.setStorageSync('carts',this.carts)
+          mpvue.setStorageSync('carts',this.carts)
       },
 
       // 切换购物车选中状态
       cutState(index){
           this.carts[index].goods_checked = !this.carts[index].goods_checked
+          
+          // 记录本地
+          mpvue.setStorageSync('carts',this.carts)
 
           if(this.checkedGoods.length === this.carts.length){
             this.allPig = true
             return
           }
             this.allPig = false
-
-          // console.log(checkedGoods.length)
-
-        
       },
+        // 加减数量
+      changeNumber(num,index){
+        
+        // 最小买一件
+          if(num == -1 && this.carts[index].goods_number <= 1) return;
+          
+          // 选中才能操作
+          if(this.carts[index].goods_checked){
+              this.carts[index].goods_number += num;
+          }
+            
+
+          // 记录本地
+          mpvue.setStorageSync('carts', this.carts)
+      },
+
       // 读取购物车数据
       getShopping(){
         this.carts = mpvue.getStorageSync('carts') || []
