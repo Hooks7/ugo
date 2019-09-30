@@ -1,5 +1,6 @@
 <template>
   <div class="wrapper">
+    <block v-if="productData">
     <!-- 商品图片 -->
     <swiper class="pics" indicator-dots indicator-color="rgba(255, 255, 255, 0.6)" indicator-active-color="#fff" circular>
       <swiper-item v-for="item in productData.pics" :key="item.pics_id">
@@ -8,7 +9,7 @@
     </swiper>
     <!-- 基本信息 -->
     <div class="meta">
-      <p class="price">{{productData.goods_price}}</p>
+      <p class="price">￥{{productData.goods_price}}</p>
       <p class="name">{{productData.goods_name}}</p>
       <p class="shipment">快递: 免运费</p>
       <span class="collect">收藏</span>
@@ -20,10 +21,11 @@
     <!-- 操作 -->
     <div class="action">
       <button>联系客服</button>
-      <span class="cart">购物车</span>
-      <span class="add">加入购物车</span>
+      <span class="cart" @click="goCart">购物车</span>
+      <span class="add" @click="addCart">加入购物车</span>
       <span class="buy">立即购买</span>
     </div>
+    </block>
   </div>
 </template>
 
@@ -56,6 +58,13 @@
       color: #333;
       line-height: 1.4;
       font-size: 33rpx;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
     }
 
     .shipment {
@@ -141,15 +150,75 @@
 </style>
 
 <script>
+import sleep from '@/utils/sleep'
 import request from '@/utils/request'
   export default {
     data() {
       return {
         // 商品列表数据
-        productData :[]
+        productData :null,
+        // 购物车数据
+        carts: []
       }
     },
     methods: {
+    async  addCart(){
+     // 标准的购物车需要检测用户是否登录
+
+        // 1. 如果登录将用户id和商品id等信息发送到后端接口
+        // 2. 如果未登录
+        //    a) 弹窗指引用户先登录，从上述 1 继续操作
+        //    b) 将购物车数据存入本地，当用户后期登录后，
+        //       从上述 1 继续操作
+
+        // 本次课中简化了购物车步骤，一律将购物车信息
+        // 记录在本地，且不区分用户，目的是练习小程序 api
+        // 的使用!!!!!!!!!!!!
+
+        // 解析数据
+       let {goods_id, goods_name, goods_small_logo, goods_price} = this.productData;
+
+        // 判断购物车中是否已包含当前商品
+        // 若包含则将数量加1，否则追加新记录
+        // 标识购物车中是否有某商品
+        let flag = false
+
+        this.carts.forEach((e)=>{
+          if(e.goods_id == goods_id){
+            // 购物车包含当前商品
+            e.goods_number++;
+            flag = true
+          }
+        })
+        
+      // 在购物车没有找到某商品
+        if(!flag){
+          this.carts.push({
+            goods_id,
+            goods_id,
+            goods_small_logo,
+            goods_price,
+            goods_number: 1,
+            goods_checked: true
+        })
+        }
+        // 存储本地
+        mpvue.setStorageSync('carts', this.carts)
+
+        // 提示用户成功
+        mpvue.showToast({
+          title:'加入成功'
+        })
+
+        // 延迟两秒
+       await  sleep(2)
+
+        mpvue.switchTab({
+          url: '/pages/cart/main'
+        })
+
+
+      },
 
       // 获得列表数据
      async commodityDetails(id){
@@ -159,11 +228,23 @@ import request from '@/utils/request'
         })
 
         this.productData = message
+      },
+
+      // 跳转购物车
+      goCart(){
+        // 切换到 tabBar 中的页面，需要
+        // 使用 switchTab
+        mpvue.switchTab({
+          url:'/pages/cart/main'
+        })
       }
     },
     onLoad(query) {
 
       this.commodityDetails(query.id)
+
+        // 将购物车中的数据，读出来，以保证数据正常追加
+      this.carts = mpvue.getStorageSync('carts') || [];
     },
   }
 </script>
