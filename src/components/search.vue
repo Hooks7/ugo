@@ -3,7 +3,7 @@
   <div class="search" :class="{focused: focused}">
     <!-- 搜索框 -->
     <div class="input-wrap" @click="goSearch">
-      <input type="text" :placeholder="placeholder">
+      <input type="text" :placeholder="placeholder" @input="suggest" v-model="keywords">
       <span class="cancle" @click.stop="cancleSearch">取消</span>
     </div>
     <!-- 搜索结果 -->
@@ -19,47 +19,40 @@
         <navigator url="">锤子</navigator>
       </div>
       <!-- 结果 -->
-      <scroll-view scroll-y class="result">
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
-        <navigator url="">小米</navigator>
+      <scroll-view scroll-y class="result" >
+        <navigator url="" v-for="item in list" :key="item.goods_id">
+        {{item.goods_name}}</navigator>
+        
       </scroll-view>
     </div>
   </div>
 </template>
 <script>
-  
+import request from '@/utils/request'
   export default {
+    
     data () {
       return {
         focused: false,
-        placeholder: ''
+        placeholder: '',
+        // 输入框
+        keywords:'',
+        // 搜索建议列表
+        list: []
       }
     },
     methods: {
+      // 搜索建议
+    async suggest(){
+        if(this.keywords == '')return this.list =[]
+
+        const {message} = await request({
+          url:'api/public/v1/goods/qsearch',
+          data:{query: this.keywords}
+        })
+        this.list = message
+      },
+
       goSearch (ev) {
         this.focused = true;
         this.placeholder = '请输入您要搜索的内容';
@@ -72,6 +65,8 @@
       cancleSearch () {
         this.focused = false;
         this.placeholder = '';
+        // 清除搜索框
+        this.keywords = ''
 
         // 触发父组件自定义事件
         this.$emit('search', {
