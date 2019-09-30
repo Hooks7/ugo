@@ -195,7 +195,7 @@ import request from '@/utils/request'
         if(!flag){
           this.carts.push({
             goods_id,
-            goods_id,
+            goods_name,
             goods_small_logo,
             goods_price,
             goods_number: 1,
