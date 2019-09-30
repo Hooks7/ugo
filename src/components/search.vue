@@ -10,7 +10,7 @@
     </div>
     <!-- 搜索结果 -->
     <div class="content">
-      <div class="title">搜索历史<span class="clear"></span></div>
+      <div class="title">搜索历史<span class="clear" @click="removeHistory"></span></div>
       <div class="history">
         <navigator :url="'/pages/list/main?query=' + item" v-for="(item,index) in history" :key="index">{{item}}</navigator>
       </div>
@@ -41,6 +41,13 @@ import request from '@/utils/request'
       }
     },
     methods: {
+      // 删除历史
+      removeHistory(){
+        this.history = [],
+         // 记录本地
+        mpvue.setStorageSync('history',this.history)
+
+      },
       // 记录搜索关键字
       goList(){
         
