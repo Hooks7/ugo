@@ -45,7 +45,7 @@
         全选
       </label>
       <div class="total">
-        合计: <span>￥</span><label>14110</label><span>.00</span>
+        合计: <span>￥</span><label>{{amount}}</label><span>.00</span>
       </div>
       <div class="pay">结算(3)</div>
     </div>
@@ -277,6 +277,17 @@
             return val.goods_checked;
         })
       },
+
+      // 总计
+      amount(){      
+          let total = 0
+          this.checkedGoods.forEach((e) => {
+            total +=  e.goods_price * e.goods_number
+          });
+
+          return total
+      }
+      
     },
     methods: {
       // 全选
