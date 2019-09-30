@@ -3,24 +3,20 @@
   <div class="search" :class="{focused: focused}">
     <!-- 搜索框 -->
     <div class="input-wrap" @click="goSearch">
-      <input type="text" :placeholder="placeholder" @input="suggest" v-model="keywords">
+      <input type="text" :placeholder="placeholder" @input="suggest" v-model="keywords"
+      @confirm='goList'
+      >
       <span class="cancle" @click.stop="cancleSearch">取消</span>
     </div>
     <!-- 搜索结果 -->
     <div class="content">
       <div class="title">搜索历史<span class="clear"></span></div>
       <div class="history">
-        <navigator url="">小米</navigator>
-        <navigator url="">智能电视</navigator>
-        <navigator url="">小米空气净化器</navigator>
-        <navigator url="">西门子洗碗机</navigator>
-        <navigator url="">华为手机</navigator>
-        <navigator url="">苹果</navigator>
-        <navigator url="">锤子</navigator>
+        <navigator :url="'/pages/list/main?query=' + item" v-for="(item,index) in history" :key="index">{{item}}</navigator>
       </div>
       <!-- 结果 -->
-      <scroll-view scroll-y class="result" >
-        <navigator url="" v-for="item in list" :key="item.goods_id">
+      <scroll-view scroll-y class="result" v-if="list.length">
+        <navigator :url="'/pages/goods/main?id=' + item.goods_id" v-for="item in list" :key="item.goods_id">
         {{item.goods_name}}</navigator>
         
       </scroll-view>
@@ -38,10 +34,33 @@ import request from '@/utils/request'
         // 输入框
         keywords:'',
         // 搜索建议列表
-        list: []
+        list: [],
+        // 搜索历史
+        history: mpvue.getStorageSync('history') || []
+
       }
     },
     methods: {
+      // 记录搜索关键字
+      goList(){
+        
+        // 添加
+        this.history.unshift(this.keywords)
+
+        // 去重
+        this.history = [...new Set(this.history)]
+        
+        // 记录本地
+        mpvue.setStorageSync('history',this.history)
+
+        // 跳转到商品列表
+        mpvue.navigateTo({
+          url: '/pages/list/main?query=' + this.keywords
+        })
+
+      },
+      
+
       // 搜索建议
     async suggest(){
         if(this.keywords == '')return this.list =[]
@@ -67,7 +86,7 @@ import request from '@/utils/request'
         this.placeholder = '';
         // 清除搜索框
         this.keywords = ''
-
+        this.suggest()
         // 触发父组件自定义事件
         this.$emit('search', {
           pageHeight: 'auto'
