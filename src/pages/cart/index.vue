@@ -2,6 +2,7 @@
   <div class="wrapper">
     <!-- 收货信息 -->
     <dl class="shipment">
+      <block v-if="address">
       <dt>收货人: </dt>
       <dd class="meta">
         <span class="name">刘德华</span>
@@ -9,6 +10,8 @@
       </dd>
       <dt>收货地址:</dt>
       <dd>广东省广州市天河区一珠吉</dd>
+    </block>
+        <button v-else type="primary" >收货地址</button>
     </dl>
     <!-- 购物车 -->
     <div class="carts">
@@ -47,7 +50,7 @@
       <div class="total">
         合计: <span>￥</span><label>{{amount}}</label><span>.00</span>
       </div>
-      <div class="pay">结算(3)</div>
+      <div class="pay">结算({{checkedGoods.length}})</div>
     </div>
   </div>
 </template>
@@ -267,7 +270,9 @@
         // 购物车数据
         carts: [],
         // 全选按钮
-        allPig :null
+        allPig: false,
+        // 收货地址
+        address: null
       }
     },
     computed: {
@@ -293,9 +298,15 @@
       // 全选
       checkAll(){
         this.carts.forEach((e)=>{
-          e.goods_checked = !e.goods_checked
-            this.allPig =  e.goods_checked
+          this.allPig ? e.goods_checked : e.goods_checked =false
         })
+        
+        this.carts.forEach((e)=>{
+
+          e.goods_checked =!e.goods_checked
+            this.allPig =  e.goods_checked      
+        })
+        
 
       // 记录本地
           mpvue.setStorageSync('carts',this.carts)
@@ -339,7 +350,8 @@
     mounted() {
       this.getShopping()
         // 全选按钮颜色设置
-        this.allPig = this.checkedGoods.length === this.carts.length ?true:false
+        this.allPig = 
+        this.checkedGoods.length === this.carts.length &&this.carts.length > 0? true :false
     },
   }
 </script>

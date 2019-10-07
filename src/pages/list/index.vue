@@ -20,6 +20,7 @@
           <p class="price" v-else>售空</p>
         </div>
       </div>
+          <div class="tips" v-show="!productlist.length">没有找到相关商品</div>
     </scroll-view>
   </div>
 </template>
@@ -96,10 +97,16 @@
     }
   }
 
+  .tips {
+    margin-top: 120rpx;
+    text-align: center;
+    font-size: 36rpx;
+    color: #666;
+  }
 </style>
 
 <script>
-  import request from '@/utils/request'
+ import request from '@/utils/request';
   export default {
     data() {
       return {
@@ -110,7 +117,8 @@
         // 每页长度
         pageSize:5,
         // 列表长度
-        total: 1
+        total: 1,
+        oldQuery:{query:''}
       }
     },
     methods: {
@@ -122,20 +130,20 @@
       },
 
         // 下拉滚动
-      getMoreGoods(){
+      getMoreGoods (){
 
         // 页数加1
-          this.pagenum ++
+          this.pagenum += 1;
 
         // 重新获取数据
         this.getProductlist(this.query)
       },
 
       // 商品列表数据
-      async getProductlist(data){
-
-        if(this.total == this.productlist.length) return;
-
+      async getProductlist (data){
+        if(this.total == this.productlist.length && this.oldQuery.query === data.query) return;
+        this.oldQuery = data;
+        console.log(this.oldQuery)
         // 分页参数
         data.pagenum = this.pagenum
         data.pagesize = this.pageSize
@@ -152,14 +160,11 @@
 
       },
   
-
-
-
     },
-    onLoad( query){
+    onLoad (query) {
       // 将获得到的地址参数记录下来
       this.query = query
-
+      this.productlist = [];
       this.getProductlist(query)
     },
 

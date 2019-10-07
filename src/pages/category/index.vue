@@ -3,13 +3,13 @@
     <!-- 搜索 -->
     <search></search>
     <!-- 分类 -->
-    <div class="category">
+    <div class="category" v-if="classify.length">
       <!-- 顶级分类 -->
       <ul class="sup">
         <scroll-view scroll-y>
           <!-- <li class="active">大家电</li> -->
-          <li v-for="item in classify" :key="item.cat_id" 
-          :class="{active:currentIndex === index}"
+          <li v-for="(item,index) in classify" :key="item.cat_id" 
+          :class="{active:currentIndex == index}"
           @click="getChildCagegories(index)"
           >{{item.cat_name}}</li>
 
@@ -79,7 +79,7 @@ export default {
   },
 
   mounted() {
-  this.getClassify()
+    this.getClassify()
 },
 }
 </script>

@@ -3,8 +3,10 @@
     <!-- 个人资料 -->
     <div class="profile">
       <div class="meta">
-        <img src="/static/uploads/monkey.png" class="avatar" alt="">
-        <span>登录/注册</span>
+        <!-- <img src="/static/uploads/monkey.png" class="avatar" alt=""> -->
+        <open-data type="userAvatarUrl" class="avatar"></open-data>
+        <!-- <span>登录/注册</span> -->
+        <open-data type="userNickName" class="user"></open-data>
       </div>
     </div>
     <!-- 统计 -->
@@ -38,8 +40,9 @@
     </div>
     <!-- 其它 -->
     <div class="extra">
-      <div class="item">联系客服</div>
-      <div class="item">意见反馈</div>
+      <div class="item"  @click="contact">联系客服</div>
+      <!-- <div class="item">意见反馈</div> -->
+      <button class="item">意见反馈</button>
     </div>
   </div>
 </template>
@@ -65,13 +68,15 @@
     .meta {
 
       .avatar {
+        display: block;
+        overflow: hidden;
         width: 140rpx;
         height: 140rpx;
         border-radius: 50%;
         border: 2rpx solid #fff;
       }
 
-      span {
+      .user {
         display: block;
         text-align: center;
         margin-top: 20rpx;
@@ -161,6 +166,15 @@
 
 <script>
   export default {
+    methods: {
+
+      // 联系客服
+      contact(){
+        mpvue.makePhoneCall({
+          phoneNumber:'10086'
+        })
+      }
+    },
     
   }
 </script>
