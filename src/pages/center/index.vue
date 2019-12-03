@@ -42,7 +42,7 @@
     <div class="extra">
       <div class="item"  @click="contact">联系客服</div>
       <!-- <div class="item">意见反馈</div> -->
-      <button class="item">意见反馈</button>
+      <button class="item" open-type="feedback">意见反馈</button>
     </div>
   </div>
 </template>

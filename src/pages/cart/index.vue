@@ -298,7 +298,7 @@
       // 全选
       checkAll(){
         this.carts.forEach((e)=>{
-          this.allPig ? e.goods_checked : e.goods_checked =false
+          this.allPig ? e.goods_checked : e.goods_checked = false
         })
         
         this.carts.forEach((e)=>{
